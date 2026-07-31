@@ -1,0 +1,9 @@
+requirements:
+  - id: REQ-001
+    title: User Login
+    status: Approved
+    service: identity
+  - id: REQ-002
+    title: Grade Entry
+    status: In Progress
+    service: examination

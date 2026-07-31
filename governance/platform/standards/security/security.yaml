@@ -1,0 +1,27 @@
+version: 1.0.0
+authentication:
+  type: "jwt"
+  algorithm: "RS256"
+  issuer: "keycloak"
+  token_expiry_max_minutes: 60
+
+encryption:
+  tls_required: true
+  tls_min_version: "1.2"
+  at_rest_algorithms: ["AES-256-GCM"]
+
+secrets_management:
+  allowed_storage: ["vault", "env_manager"]
+  forbidden_in_code: true
+  entropy_threshold: 4.5
+
+owasp_enforcement:
+  sql_injection: "parameterized_queries_only"
+  xss: "auto_escape_outputs"
+  cors:
+    allowed_origins: ["*.university.edu"]
+
+agent_safety:
+  forbid_direct_file_mutation: true
+  require_human_approval_gate: true
+  mandatory_flow: "RuleEngine -> FindingEngine -> ReportEngine -> Approval"

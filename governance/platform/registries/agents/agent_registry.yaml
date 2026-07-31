@@ -1,0 +1,7 @@
+agent:
+  id: string
+  version: string
+  status: enum [active, deprecated, experimental]
+  capabilities: list[string]
+  message_types: list[string]
+  dependencies: list[string]

@@ -1,0 +1,23 @@
+name: string
+version: string
+governance_domain: string
+type: string
+priority: enum [Critical, High, Normal, Low]
+state: enum [Draft, Active, Deprecated, Retired]
+mode: enum [advisory, warning, blocking]
+authority:
+  can_generate: boolean
+  can_review: boolean
+  can_approve: boolean
+  can_reject: boolean
+  can_deploy: boolean
+execution_mode: enum [sync, async]
+review_frequency: enum [on_pr, daily, weekly, continuous]
+responsibilities: list
+inputs: list
+outputs: list
+policies: list
+registries: list
+dependencies: list
+success_criteria: list
+failure_conditions: list

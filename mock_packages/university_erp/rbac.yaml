@@ -1,0 +1,9 @@
+roles:
+  - id: student
+    permissions:
+      - read_grades
+      - view_attendance
+  - id: teacher
+    permissions:
+      - write_grades
+      - write_attendance

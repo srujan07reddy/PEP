@@ -1,0 +1,7 @@
+workspace:
+  id: string
+  name: string
+  type: string
+  domain: string
+  owner: string
+  status: enum [active, archived, deprecated]

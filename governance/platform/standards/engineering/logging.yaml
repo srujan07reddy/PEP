@@ -1,0 +1,9 @@
+version: "1.0.0"
+format: "structured_json"
+forbidden:
+  - "print()"
+  - "logger.info('raw string')"
+required:
+  - "trace_id"
+  - "timestamp"
+  - "event_name"

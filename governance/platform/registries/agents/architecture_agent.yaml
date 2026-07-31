@@ -1,0 +1,7 @@
+agent:
+  id: "architecture-agent"
+  version: "1.0.0"
+  status: "active"
+  capabilities: ["review"]
+  message_types: ["trigger_pipeline"]
+  dependencies: []

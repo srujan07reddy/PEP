@@ -1,0 +1,8 @@
+mcp_server:
+  id: string
+  name: string
+  version: string
+  status: enum [active, deprecated, experimental]
+  resources: list[string]
+  tools: list[string]
+  permissions: list[string]

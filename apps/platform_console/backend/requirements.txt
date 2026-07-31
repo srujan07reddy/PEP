@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlalchemy
+alembic
+pydantic
+psycopg2-binary
+pyyaml
+bandit
+semgrep
+mypy
+ruff

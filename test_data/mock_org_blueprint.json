@@ -1,0 +1,61 @@
+{
+    "organization_name": "Mock Org",
+    "type": "Enterprise",
+    "industry": "Tech",
+    "country": "US",
+    "departments": [
+        {
+            "id": "dept-finance",
+            "name": "Finance Department",
+            "budget": "1000000"
+        },
+        {
+            "id": "dept-hr",
+            "name": "Human Resources"
+        }
+    ],
+    "roles": [
+        {
+            "id": "role-cfo",
+            "name": "Chief Financial Officer",
+            "department_id": "dept-finance"
+        },
+        {
+            "id": "role-finance-mgr",
+            "name": "Finance Manager",
+            "department_id": "dept-finance",
+            "reports_to": "role-cfo"
+        },
+        {
+            "id": "role-finance-analyst",
+            "name": "Finance Analyst",
+            "department_id": "dept-finance",
+            "reports_to": "role-finance-mgr"
+        },
+        {
+            "id": "role-circular-1",
+            "name": "Circular Manager A",
+            "reports_to": "role-circular-2"
+        },
+        {
+            "id": "role-circular-2",
+            "name": "Circular Manager B",
+            "reports_to": "role-circular-1"
+        }
+    ],
+    "workflows": [
+        {
+            "id": "wf-purchase-approval",
+            "name": "Purchase Order Approval",
+            "approval_chain": ["role-finance-mgr", "role-cfo"],
+            "steps": ["Create PO", "Manager Review", "CFO Review", "Process Payment"]
+        }
+    ],
+    "policies": [
+        {
+            "id": "pol-sec-1",
+            "name": "SOC2 Compliance",
+            "depends_on": ["wf-purchase-approval"]
+        }
+    ]
+}

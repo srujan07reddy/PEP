@@ -1,0 +1,25 @@
+version: "1.0.0"
+runtime:
+  version_lock: "3.13"
+  forbid_versions: ["3.11", "3.12"]
+
+typing:
+  strict: true
+  forbid_any: true
+  require_return_types: true
+
+data_structures:
+  enforce_pydantic: true
+  forbid_raw_dicts_in_apis: true
+
+architecture:
+  require_dependency_injection: true
+  forbidden_in_api_routes: ["business_logic", "database_queries"]
+
+exceptions:
+  forbid_bare_except: true
+  require_custom_domain_exceptions: true
+
+async:
+  allowed_for: ["http", "database", "events", "file_io"]
+  forbidden_for: ["cpu_bound_tasks"]

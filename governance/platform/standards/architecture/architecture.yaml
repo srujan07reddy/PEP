@@ -1,0 +1,13 @@
+version: "1.0.0"
+rules:
+  forbid_domain_in_platform:
+    description: "Platform core directories must never import or reference domain terms (e.g. Student, Attendance)."
+    severity: "Critical"
+    remediation: "Move domain-specific logic to the appropriate governance/domains/ directory."
+    condition_type: "ast_pattern"
+    
+  require_domain_manifest:
+    description: "Every sub-folder in governance/domains/ must contain a valid domain_manifest.yaml."
+    severity: "High"
+    remediation: "Create a domain_manifest.yaml file for the domain package."
+    condition_type: "custom"

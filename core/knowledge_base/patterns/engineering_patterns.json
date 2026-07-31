@@ -1,0 +1,15 @@
+{
+    "Architecture Patterns": [
+        {"id": "ARCH-001", "name": "Event-Driven Microservices", "description": "Decouples services using asynchronous event streams."},
+        {"id": "ARCH-002", "name": "Strangler Fig Pattern", "description": "Incrementally migrates a legacy system by gradually replacing specific pieces of functionality with new applications and services."}
+    ],
+    "Workflow Patterns": [
+        {"id": "WF-001", "name": "Parallel Approval Chain", "description": "Executes approvals concurrently rather than sequentially to reduce cycle time."}
+    ],
+    "Integration Patterns": [
+        {"id": "INT-001", "name": "Anti-Corruption Layer", "description": "Implements a facade or adapter layer between different subsystems that don't share the same semantics."}
+    ],
+    "Security Patterns": [
+        {"id": "SEC-001", "name": "Zero Trust Network Access", "description": "Never trust, always verify. Enforces strict identity verification for every person and device trying to access resources."}
+    ]
+}

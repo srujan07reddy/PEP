@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: pep_admin
+      POSTGRES_PASSWORD: pep_password
+      POSTGRES_DB: pep_console
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  platform-console-backend:
+    build: 
+      context: ../backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://pep_admin:pep_password@postgres:5432/pep_console
+      - PYTHONPATH=/workspace
+    volumes:
+      - ../backend:/app
+      - ../../../:/workspace
+      - D:\:/host_d
+    depends_on:
+      - postgres
+
+  platform-console-frontend:
+    build:
+      context: ../frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+
+volumes:
+  pgdata:

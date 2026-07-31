@@ -1,0 +1,7 @@
+domain:
+  name: University ERP
+  version: 1.0.0
+  services:
+    - identity
+    - examination
+    - attendance

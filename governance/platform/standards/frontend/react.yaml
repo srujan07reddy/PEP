@@ -1,0 +1,7 @@
+frontend_react:
+  typescript_strict: true
+  no_any: true
+  api_generation_required: true
+  component_test_required: true
+  routing: "react-router"
+  build_tool: "vite"

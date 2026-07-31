@@ -1,0 +1,3 @@
+frontend_state:
+  framework: "zustand"
+  forbid_redux: true

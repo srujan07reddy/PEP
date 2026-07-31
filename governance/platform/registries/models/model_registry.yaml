@@ -1,0 +1,6 @@
+model:
+  id: string
+  provider: string
+  version: string
+  purpose: string
+  state: enum [active, deprecated, experimental]

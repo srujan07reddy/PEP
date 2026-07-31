@@ -1,0 +1,10 @@
+domain:
+  id: string
+  name: string
+  version: string
+  owner: string
+  state: enum [draft, active, deprecated]
+  services: list[string]
+  permissions: list[string]
+  workflows: list[string]
+  standards: list[string]

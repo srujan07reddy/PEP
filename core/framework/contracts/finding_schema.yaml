@@ -1,0 +1,15 @@
+finding:
+  id: string
+  severity: enum [Critical, High, Normal, Low, Info]
+  title: string
+  description: string
+  recommendation: string
+  source:
+    agent_name: string
+    rule_id: string
+  location:
+    file_path: string
+    line_number: int
+    column: int
+    context_snippet: string
+  timestamp: string

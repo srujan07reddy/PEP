@@ -1,0 +1,9 @@
+version: "1.0.0"
+queries:
+  forbid_select_star: true
+  require_parameterized_queries: true
+  require_table_aliases: true
+
+orm_rules:
+  require_repository_pattern: true
+  forbid_raw_cursor_execute_in_services: true

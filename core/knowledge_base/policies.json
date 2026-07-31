@@ -1,0 +1,34 @@
+{
+  "policies": [
+    {
+      "id": "ugc-1",
+      "category": "UGC Guidelines",
+      "title": "Data Privacy for Students",
+      "description": "Student data must be encrypted at rest and in transit."
+    },
+    {
+      "id": "naac-1",
+      "category": "NAAC Guidelines",
+      "title": "Continuous Assessment Tracking",
+      "description": "The system must track continuous assessments and generate reports on a semester basis."
+    },
+    {
+      "id": "nba-1",
+      "category": "NBA Requirements",
+      "title": "Outcome Based Education (OBE) Mapping",
+      "description": "The ERP must support mapping of course outcomes to program outcomes."
+    },
+    {
+      "id": "aicte-1",
+      "category": "AICTE Guidelines",
+      "title": "Faculty Workload Management",
+      "description": "Faculty workload must be tracked and constrained to recommended hours per week."
+    },
+    {
+      "id": "arch-1",
+      "category": "Architecture Patterns",
+      "title": "Microservices Migration",
+      "description": "Monoliths should be incrementally decoupled using API gateways and event buses."
+    }
+  ]
+}

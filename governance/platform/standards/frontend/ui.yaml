@@ -1,0 +1,5 @@
+frontend_ui:
+  framework: "shadcn_ui"
+  forms: "react_hook_form"
+  validation: "zod"
+  forbid_multiple_libraries: true

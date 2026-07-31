@@ -1,0 +1,7 @@
+version: "1.0.0"
+structure:
+  required_directories: ["unit", "integration", "contract"]
+
+coverage:
+  global_minimum_percent: 80
+  critical_modules_percent: 95

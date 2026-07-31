@@ -1,0 +1,9 @@
+version: "1.0.0"
+compiler_options:
+  strict: true
+  noImplicitAny: true
+  strictNullChecks: true
+
+linting:
+  enforce_interfaces_over_types: true
+  forbid_console_log: true

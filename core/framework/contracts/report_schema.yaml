@@ -1,0 +1,17 @@
+report:
+  id: string
+  pipeline_id: string
+  target_ref: string
+  status: enum [PASS, FAIL, WARNING]
+  summary:
+    total_findings: int
+    critical: int
+    high: int
+    normal: int
+    low: int
+  agent_reports:
+    - agent_name: string
+      execution_time_ms: int
+      status: enum [PASS, FAIL, WARNING]
+      findings: list[finding]
+  timestamp: string

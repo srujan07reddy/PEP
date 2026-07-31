@@ -1,0 +1,10 @@
+rule:
+  id: string
+  standard_domain: string
+  name: string
+  description: string
+  severity: enum [Critical, High, Normal, Low]
+  condition_type: enum [ast_pattern, regex, opa_query, custom]
+  condition_logic: string
+  remediation: string
+  metadata: dict

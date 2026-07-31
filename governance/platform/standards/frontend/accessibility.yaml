@@ -1,0 +1,4 @@
+frontend_accessibility:
+  wcag_level: "AA"
+  aria_roles_required: true
+  keyboard_navigation_required: true
