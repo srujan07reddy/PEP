@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getAgents, runAgent, getAgentDetails, getDomains, createDomain, createAgent, updateAgent, toggleAgent } from '../lib/api';
+import { getAgents, runAgent, getAgentDetails, getDomains, createDomain, createAgent, updateAgent, toggleAgent, deleteAgent } from '../lib/api';
 
 export default function Agents() {
   const queryClient = useQueryClient();
@@ -114,6 +114,13 @@ export default function Agents() {
     }
   });
 
+  const deleteAgentMutation = useMutation({
+    mutationFn: (id: string) => deleteAgent(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['agents'] });
+    }
+  });
+
   if (isLoadingAgents || isLoadingDomains) return <div className="text-gray-500">Loading...</div>;
 
   return (
@@ -216,6 +223,17 @@ export default function Agents() {
                     className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-1.5 rounded-md text-sm font-medium transition-colors"
                   >
                     View Code
+                  </button>
+                  <button 
+                    onClick={() => {
+                      if (window.confirm(`Are you sure you want to delete agent ${a.id}?`)) {
+                        deleteAgentMutation.mutate(a.id);
+                      }
+                    }}
+                    className="bg-red-50 border border-red-200 hover:bg-red-100 text-red-700 px-4 py-1.5 rounded-md text-sm font-medium transition-colors"
+                    disabled={deleteAgentMutation.isPending && deleteAgentMutation.variables === a.id}
+                  >
+                    {deleteAgentMutation.isPending && deleteAgentMutation.variables === a.id ? 'Deleting...' : 'Delete'}
                   </button>
                   <button 
                     onClick={() => runMutation.mutate({ 

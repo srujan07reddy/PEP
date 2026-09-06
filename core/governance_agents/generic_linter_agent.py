@@ -1,6 +1,7 @@
 import json
 import uuid
 import subprocess
+import os
 from pathlib import Path
 from typing import Any, Dict
 from datetime import datetime
@@ -34,7 +35,8 @@ class GenericLinterAgent(BaseAgent):
             result = subprocess.run(
                 ["ruff", "check", str(src_dir), "--format", "json"],
                 capture_output=True,
-                text=True
+                text=True,
+                shell=(os.name == "nt")
             )
             
             if not result.stdout:
@@ -67,7 +69,8 @@ class GenericLinterAgent(BaseAgent):
             result = subprocess.run(
                 ["mypy", str(src_dir), "--show-error-codes", "--no-error-summary"],
                 capture_output=True,
-                text=True
+                text=True,
+                shell=(os.name == "nt")
             )
             
             for line in result.stdout.splitlines():

@@ -83,6 +83,11 @@ export const toggleAgent = async (agentId: string, status: 'active' | 'disabled'
   return data;
 };
 
+export const deleteAgent = async (agentId: string) => {
+  const { data } = await api.delete(`/agents/${agentId}`);
+  return data;
+};
+
 export const clearReports = async () => {
   const { data } = await api.delete('/reports');
   return data;

@@ -1,0 +1,8 @@
+# Registry of Capabilities
+# Maps generic capabilities to specific tools/engines
+
+capabilities:
+  - id: source-parsing
+    description: Parse source code into AST
+    engines:
+      - tree-sitter

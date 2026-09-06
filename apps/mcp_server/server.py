@@ -159,6 +159,47 @@ def engineering_decision_board(domain_id: str) -> str:
     """Trigger the Engineering Decision Board to resolve conflicts and merge findings."""
     return json.dumps({"status": "Decision board processing initiated."})
 
+@mcp.tool()
+def set_coderabbit_api_key(api_key: str) -> str:
+    """Store the CodeRabbit API key for the adapter to use."""
+    key_file = Path(WORKSPACE_ROOT) / ".coderabbit_key"
+    try:
+        with open(key_file, "w", encoding="utf-8") as f:
+            f.write(api_key.strip())
+        return json.dumps({"status": "API key successfully stored."})
+    except Exception as e:
+        return f"Error storing API key: {e}"
+
+@mcp.tool()
+def get_code_recommendations(filename: str, code_snippet: str) -> str:
+    """
+    Analyzes a code snippet using all available AI Review Adapters (e.g. CodeRabbit, Kodus)
+    and returns recommendations focusing on DRY principles and low line counts.
+    """
+    from core.framework.plugins.plugin_manager import PluginManager # type: ignore
+    try:
+        manager = PluginManager()
+        adapters_dir = Path(WORKSPACE_ROOT) / "registry" / "adapters"
+        manager.load_plugins(str(adapters_dir))
+        
+        reviewers = manager.get_all_adapters("ai_code_review")
+        all_findings = []
+        
+        for reviewer in reviewers:
+            try:
+                findings = reviewer.request_review(code_snippet, filename)
+                all_findings.extend(findings)
+            except Exception as e:
+                pass
+                
+        return json.dumps({
+            "status": "success",
+            "findings": all_findings,
+            "message": f"Analyzed by {len(reviewers)} AI engines."
+        }, indent=2)
+    except Exception as e:
+        return json.dumps({"status": "error", "message": str(e)})
+
 def main():
     mcp.run(transport='stdio')
 

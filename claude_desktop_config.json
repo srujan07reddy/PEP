@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "pep-mcp-server": {
+      "command": "python",
+      "args": [
+        "d:/product-engineering-platform/apps/mcp_server/server.py"
+      ],
+      "env": {
+        "WORKSPACE_ROOT": "d:/product-engineering-platform",
+        "PYTHONPATH": "d:/product-engineering-platform"
+      }
+    }
+  }
+}

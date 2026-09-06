@@ -1,0 +1,10 @@
+# Compatibility Matrix
+# Defines compatibility constraints for tools and languages
+
+matrices:
+  - id: tree-sitter-languages
+    tool: tree-sitter
+    compatible_with:
+      - python: ">=3.8"
+      - java: ">=11"
+      - go: ">=1.18"

@@ -503,11 +503,13 @@ def get_findings():
 
 @app.get("/agents/{agent_id}")
 def get_agent_details(agent_id: str):
-    filename = agent_id.replace("-", "_") + ".py"
+    filename = agent_id.replace("-", "_") + "_agent.py"
     filepath = Path(WORKSPACE_ROOT) / "core" / "governance_agents" / filename
     
     if not filepath.exists():
-        raise HTTPException(status_code=404, detail="Agent not found")
+        filepath = Path(WORKSPACE_ROOT) / "core" / "governance_agents" / (filename + ".disabled")
+        if not filepath.exists():
+            raise HTTPException(status_code=404, detail="Agent not found")
         
     code = filepath.read_text(encoding="utf-8")
     
@@ -535,11 +537,13 @@ class UpdateAgentRequest(BaseModel):
 
 @app.put("/agents/{agent_id}")
 def update_agent(agent_id: str, req: UpdateAgentRequest):
-    filename = agent_id.replace("-", "_") + ".py"
+    filename = agent_id.replace("-", "_") + "_agent.py"
     filepath = Path(WORKSPACE_ROOT) / "core" / "governance_agents" / filename
     
     if not filepath.exists():
-        raise HTTPException(status_code=404, detail="Agent not found")
+        filepath = Path(WORKSPACE_ROOT) / "core" / "governance_agents" / (filename + ".disabled")
+        if not filepath.exists():
+            raise HTTPException(status_code=404, detail="Agent not found")
         
     try:
         filepath.write_text(req.code, encoding="utf-8")
@@ -569,6 +573,27 @@ def toggle_agent(agent_id: str, req: ToggleAgentRequest):
             
     raise HTTPException(status_code=404, detail="Agent not found or already in requested state")
 
+@app.delete("/agents/{agent_id}")
+def delete_agent(agent_id: str):
+    agent_id_underscore = agent_id.replace("-", "_")
+    agents_dir = Path(WORKSPACE_ROOT) / "core" / "governance_agents"
+    
+    active_path = agents_dir / f"{agent_id_underscore}_agent.py"
+    disabled_path = agents_dir / f"{agent_id_underscore}_agent.py.disabled"
+    
+    deleted = False
+    if active_path.exists():
+        active_path.unlink()
+        deleted = True
+    if disabled_path.exists():
+        disabled_path.unlink()
+        deleted = True
+        
+    if deleted:
+        return {"status": "success", "message": f"{agent_id} deleted"}
+    else:
+        raise HTTPException(status_code=404, detail="Agent not found")
+
 class CreateAgentRequest(BaseModel):
     agent_id: str
     description: str = "A custom agent"
@@ -576,7 +601,7 @@ class CreateAgentRequest(BaseModel):
 @app.post("/agents")
 def create_agent(req: CreateAgentRequest):
     agent_id = req.agent_id.lower().replace(" ", "-")
-    filename = agent_id.replace("-", "_") + ".py"
+    filename = agent_id.replace("-", "_") + "_agent.py"
     filepath = Path(WORKSPACE_ROOT) / "core" / "governance_agents" / filename
     
     if filepath.exists():
@@ -700,3 +725,58 @@ def run_agent(req: AgentRunRequest):
     }
 
 # Triggering reload
+
+# --- INTELLIGENCE API ENDPOINTS ---
+
+from core.framework.engines.repository_scanner import RepositoryScanner
+from core.framework.engines.process_intelligence_engine import ProcessIntelligenceEngine
+from core.framework.compilers.okc.document_intelligence import DocumentIntelligenceEngine
+
+class ProcessIntelligenceRequest(BaseModel):
+    camunda_url: str
+    process_id: str
+    event_log_path: str
+
+@app.post("/api/intelligence/scan-repo")
+def scan_repository():
+    try:
+        scanner = RepositoryScanner(WORKSPACE_ROOT)
+        result = scanner.scan()
+        return {"status": "success", "data": result}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+@app.post("/api/intelligence/process")
+def analyze_process(req: ProcessIntelligenceRequest):
+    try:
+        engine = ProcessIntelligenceEngine()
+        result = engine.analyze_conformance(req.camunda_url, req.process_id, req.event_log_path)
+        return {"status": "success", "data": result}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+@app.post("/api/intelligence/document")
+async def parse_document(file: UploadFile = File(...)):
+    try:
+        contents = await file.read()
+        file_ext = file.filename.split(".")[-1].lower() if "." in file.filename else "txt"
+        
+        engine = DocumentIntelligenceEngine()
+        result = engine.extract_structured_info(contents, file_ext)
+        return {"status": "success", "data": result}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+from core.framework.engines.quality_engine import QualityEngine
+from core.framework.models.knowledge_graph import KnowledgeGraph
+
+@app.post("/api/review")
+def run_ai_review():
+    try:
+        engine = QualityEngine(WORKSPACE_ROOT)
+        # Pass an empty graph just to trigger the engine for demonstration
+        mock_kg = KnowledgeGraph()
+        result = engine.analyze(mock_kg)
+        return {"status": "success", "data": result}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}

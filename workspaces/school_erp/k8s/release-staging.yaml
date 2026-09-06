@@ -1,0 +1,9 @@
+apiVersion: pep.io/v1
+kind: Release
+metadata:
+  name: school_erp-staging-release
+spec:
+  environment: staging
+  services:
+  - core
+  timestamp: 2026-08-31T08:01:11.130082Z

@@ -1,0 +1,15 @@
+id: tree-sitter
+category: parser
+license: MIT
+language:
+  - Python
+  - Java
+  - Go
+adapter: TreeSitterAdapter
+status: validated
+confidence: production
+version: latest
+supports:
+  - AST
+  - Functions
+  - Classes
