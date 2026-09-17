@@ -737,6 +737,50 @@ class ProcessIntelligenceRequest(BaseModel):
     process_id: str
     event_log_path: str
 
+class AIHandshakeRequest(BaseModel):
+    apiKey: str
+    provider: str = None
+
+from core.ai.providers import detect_provider
+
+@app.post("/api/ai/handshake")
+def ai_handshake(req: AIHandshakeRequest):
+    key = req.apiKey.strip()
+    if not key:
+        return {"status": "error", "message": "API Key is empty"}
+        
+    adapter = detect_provider(key)
+    if not adapter:
+        return {"status": "error", "message": "Invalid API Key format"}
+
+    is_valid = adapter.validate(key)
+    
+    if not is_valid:
+        return {
+            "status": "error",
+            "message": f"Validation failed for {adapter.provider_name}. Invalid key or unauthorized.",
+            "provider": adapter.provider_name
+        }
+
+    models = adapter.get_models(key)
+    usage = adapter.get_usage(key)
+    quota = adapter.get_quota(key)
+    rate_limits = adapter.get_rate_limits(key)
+
+    return {
+        "status": "success", 
+        "message": f"Handshake successful for {adapter.provider_name}",
+        "provider": adapter.provider_name,
+        "authentication": {
+            "valid": True,
+            "key_type": "api_key"
+        },
+        "models": models,
+        "usage": usage,
+        "quota": quota,
+        "rate_limits": rate_limits
+    }
+
 @app.post("/api/intelligence/scan-repo")
 def scan_repository():
     try:

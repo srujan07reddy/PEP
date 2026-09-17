@@ -12,28 +12,50 @@ const IdeaEnhancerSettings = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isCheckingTokens, setIsCheckingTokens] = useState(false);
   const [tokenBalance, setTokenBalance] = useState<number | null>(null);
+  const [handshakeStatus, setHandshakeStatus] = useState<{status: 'success' | 'error' | null, message: string}>({status: null, message: ''});
 
-  const handleApiKeyChange = (key: string) => {
+  const handleApiKeyChange = async (key: string) => {
     let newProvider = '';
     if (key.startsWith('sk-ant-')) {
       newProvider = 'Anthropic (Claude)';
     } else if (key.startsWith('sk-') && !key.startsWith('sk-ant-')) {
       newProvider = 'OpenAI (GPT)';
-    } else if (key.startsWith('AIza')) {
+    } else if (key.startsWith('AIza') || key.startsWith('AQ')) {
       newProvider = 'Google (Gemini)';
     } else if (key.length > 10) {
       newProvider = 'Unknown Provider';
     }
     
-    setConfig({ ...config, apiKey: key, aiProvider: newProvider });
+    setConfig(prev => ({ ...prev, apiKey: key, aiProvider: newProvider }));
+    setHandshakeStatus({status: null, message: ''});
     
-    if (key.length > 10 && newProvider && newProvider !== 'Unknown Provider') {
+    if (key.length > 5) {
       setIsCheckingTokens(true);
       setTokenBalance(null);
-      setTimeout(() => {
+      
+      try {
+        const response = await fetch('http://localhost:8000/api/ai/handshake', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ apiKey: key, provider: newProvider }),
+        });
+        
+        const data = await response.json();
+        if (data.status === 'success') {
+          setConfig(prev => ({ ...prev, aiProvider: data.provider }));
+          setHandshakeStatus({status: 'success', message: data.message});
+          // Use real quota if provided, otherwise set to null
+          setTokenBalance(data.quota?.remaining_tokens ?? null);
+        } else {
+          setHandshakeStatus({status: 'error', message: data.message});
+        }
+      } catch (error) {
+        setHandshakeStatus({status: 'error', message: 'Failed to connect to backend handshake endpoint'});
+      } finally {
         setIsCheckingTokens(false);
-        setTokenBalance(Math.floor(Math.random() * 5000000) + 1000000); // Mock between 1m - 6m tokens
-      }, 1200);
+      }
     } else {
       setTokenBalance(null);
     }
@@ -126,21 +148,34 @@ const IdeaEnhancerSettings = () => {
               </div>
             )}
 
-            {config.apiKey.length > 10 && config.aiProvider && config.aiProvider !== 'Unknown Provider' && (
+            {config.apiKey.length > 5 && (
               <div className="animate-fade-in-up space-y-5 pt-2 border-t border-gray-100">
                 <div>
-                  <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Database className="w-4 h-4 text-indigo-500" />
-                      <span className="text-sm font-medium text-slate-700">Account Balance</span>
+                  <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Database className="w-4 h-4 text-indigo-500" />
+                        <span className="text-sm font-medium text-slate-700">Account Balance</span>
+                      </div>
+                      {isCheckingTokens ? (
+                        <span className="text-sm text-slate-500 animate-pulse">Checking tokens...</span>
+                      ) : tokenBalance !== null ? (
+                        <span className="text-sm font-bold text-green-600">
+                          {tokenBalance.toLocaleString()} tokens remaining
+                        </span>
+                      ) : (
+                        <span className="text-sm text-slate-500">
+                          Not exposed by provider
+                        </span>
+                      )}
                     </div>
-                    {isCheckingTokens ? (
-                      <span className="text-sm text-slate-500 animate-pulse">Checking tokens...</span>
-                    ) : tokenBalance !== null ? (
-                      <span className="text-sm font-bold text-green-600">
-                        {tokenBalance.toLocaleString()} tokens remaining
-                      </span>
-                    ) : null}
+                    
+                    {handshakeStatus.status && (
+                      <div className={`mt-2 p-2 text-sm rounded ${handshakeStatus.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                        {handshakeStatus.status === 'success' ? '✅ ' : '❌ '} 
+                        {handshakeStatus.message}
+                      </div>
+                    )}
                   </div>
                 </div>
 

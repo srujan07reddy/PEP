@@ -54,9 +54,15 @@ const IdeaEnhancer = () => {
         </div>
         
         <div className="p-6">
-          {activeTab === 'create' && <CreateFromScratch />}
-          {activeTab === 'enhance' && <EnhanceExistingIdea />}
-          {activeTab === 'settings' && <IdeaEnhancerSettings />}
+          <div className={activeTab === 'create' ? 'block' : 'hidden'}>
+            <CreateFromScratch />
+          </div>
+          <div className={activeTab === 'enhance' ? 'block' : 'hidden'}>
+            <EnhanceExistingIdea />
+          </div>
+          <div className={activeTab === 'settings' ? 'block' : 'hidden'}>
+            <IdeaEnhancerSettings />
+          </div>
         </div>
       </div>
     </div>

@@ -1,0 +1,8 @@
+To run the backend server:
+cd apps/platform_console/backend
+python -m uvicorn main:app --reload
+
+To run the frontend client:
+cd apps/platform_console/frontend
+npm install
+npm run dev

@@ -1,11 +1,13 @@
 import { useState } from 'react';
+import { Trash2 } from 'lucide-react';
 
-const mockExistingIdeas = [
+const initialIdeas = [
   { id: 1, title: 'Workflow Automation Agent', status: 'In Progress', content: 'Architecture diagram and initial scripts for automating JIRA to GitHub issues.' },
   { id: 2, title: 'Data Ingestion Pipeline', status: 'Saved', content: 'Python script for reading CSV and inserting into Postgres with chunking.' }
 ];
 
 const EnhanceExistingIdea = () => {
+  const [ideas, setIdeas] = useState(initialIdeas);
   const [selectedIdea, setSelectedIdea] = useState<any>(null);
   const [inputText, setInputText] = useState('');
   const [files, setFiles] = useState<FileList | null>(null);
@@ -17,6 +19,16 @@ const EnhanceExistingIdea = () => {
     setSelectedIdea(idea);
     setInputText(idea.content);
     setAnalysisComplete(false);
+  };
+  
+  const handleDeleteIdea = (e: React.MouseEvent, id: number) => {
+    e.stopPropagation();
+    setIdeas(ideas.filter(idea => idea.id !== id));
+    if (selectedIdea?.id === id) {
+      setSelectedIdea(null);
+      setInputText('');
+      setAnalysisComplete(false);
+    }
   };
 
   const handleAnalyze = () => {
@@ -41,16 +53,26 @@ const EnhanceExistingIdea = () => {
       <div className="w-full md:w-1/3 space-y-4 border-r border-gray-200 pr-4">
         <h3 className="font-semibold text-gray-800">Your Existing Ideas</h3>
         <div className="space-y-3">
-          {mockExistingIdeas.map((idea) => (
+          {ideas.length === 0 && <p className="text-sm text-gray-500 italic">No existing ideas found.</p>}
+          {ideas.map((idea) => (
             <div
               key={idea.id}
               onClick={() => handleSelectIdea(idea)}
-              className={`p-3 rounded-lg border cursor-pointer transition-colors ${selectedIdea?.id === idea.id ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50'}`}
+              className={`p-3 rounded-lg border cursor-pointer transition-colors relative group ${selectedIdea?.id === idea.id ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50'}`}
             >
-              <h4 className="font-medium text-sm text-gray-900">{idea.title}</h4>
-              <span className={`text-xs px-2 py-0.5 rounded-full mt-2 inline-block ${idea.status === 'In Progress' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
-                {idea.status}
-              </span>
+              <div className="pr-6">
+                <h4 className="font-medium text-sm text-gray-900">{idea.title}</h4>
+                <span className={`text-xs px-2 py-0.5 rounded-full mt-2 inline-block ${idea.status === 'In Progress' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
+                  {idea.status}
+                </span>
+              </div>
+              <button
+                onClick={(e) => handleDeleteIdea(e, idea.id)}
+                className="absolute top-3 right-3 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                title="Delete Idea"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
             </div>
           ))}
         </div>
