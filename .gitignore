@@ -1,5 +1,7 @@
-
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# Ignore specific domains
+governance/domains/school_erp/
