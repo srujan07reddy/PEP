@@ -6,9 +6,12 @@ import sys
 from pathlib import Path
 import ast
 
-WORKSPACE_ROOT = os.getenv("WORKSPACE_ROOT", "d:/product-engineering-platform")
+WORKSPACE_ROOT = os.getenv(
+    "WORKSPACE_ROOT",
+    str(Path(__file__).resolve().parents[3]),
+)
 if WORKSPACE_ROOT not in sys.path:
-    sys.path.append(WORKSPACE_ROOT)
+    sys.path.insert(0, WORKSPACE_ROOT)
 
 from core.framework.engines.domain_loader import DomainLoader
 
