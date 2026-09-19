@@ -1,1 +1,63 @@
 @import "tailwindcss";
+
+:root {
+	font-family: "Inter", "Segoe UI", sans-serif;
+	color: #17212b;
+	background: #eef2f3;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	min-width: 320px;
+	background:
+		radial-gradient(circle at 10% 0%, rgba(20, 184, 166, 0.08), transparent 28rem),
+		linear-gradient(135deg, #f7faf9 0%, #eef2f3 52%, #e7eef0 100%);
+}
+
+button,
+input,
+select,
+textarea {
+	font: inherit;
+}
+
+::selection {
+	background: #99f6e4;
+	color: #134e4a;
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+::-webkit-scrollbar-track {
+	background: #e8eeee;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #9aabaa;
+	border: 2px solid #e8eeee;
+	border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #648087;
+}
+
+@keyframes slide-in {
+	from {
+		opacity: 0;
+		transform: translateX(24px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
