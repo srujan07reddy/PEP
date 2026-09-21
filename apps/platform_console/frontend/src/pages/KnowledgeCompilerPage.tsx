@@ -7,10 +7,11 @@ export default function KnowledgeCompilerPage() {
   const [selectedFile, setSelectedFile] = useState(null);
 
   return (
-    <div className="flex flex-col gap-8 h-full overflow-auto">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Organizational Knowledge Compiler</h1>
-        <p className="text-gray-600">
+    <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-8 overflow-auto pb-8">
+      <div className="max-w-3xl">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">Knowledge systems / compiler</p>
+        <h1 className="text-4xl font-bold tracking-tight text-slate-900">Organizational Knowledge Compiler</h1>
+        <p className="mt-3 text-base leading-7 text-slate-500">
           Upload and compile your organizational blueprint into a traversable Knowledge Graph.
           Once compiled, validate the graph to ensure no circular dependencies or orphaned roles exist.
         </p>
