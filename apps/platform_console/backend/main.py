@@ -1,10 +1,8 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import os
 import sys
-import subprocess  # nosec B404 - fixed scanner command with no user-controlled arguments
 import secrets
 from pathlib import Path
 import ast
@@ -433,62 +431,6 @@ def get_agents():
 def get_standards():
     return {"data": [{"id": "python.yaml"}, {"id": "react.yaml"}, {"id": "security.yaml"}]}
 
-
-@app.get("/security/scan")
-def security_scan():
-    """Return current SAST findings and the API security controls in effect."""
-    findings = []
-    try:
-        result = subprocess.run(
-            [sys.executable, "-m", "bandit", "-r", str(Path(WORKSPACE_ROOT)), "-f", "json", "-x", "apps/platform_console/frontend/node_modules"],
-            capture_output=True,
-            text=True,
-            check=False,
-            timeout=120,
-        )  # nosec B603 - command and arguments are fixed by the server
-        if result.stdout:
-            scan = json.loads(result.stdout)
-            for issue in scan.get("results", []):
-                findings.append({
-                    "id": f"bandit:{issue.get('test_id')}:{issue.get('filename')}:{issue.get('line_number')}",
-                    "tool": "Bandit",
-                    "severity": issue.get("issue_severity", "LOW").title(),
-                    "rule": issue.get("test_id", "bandit"),
-                    "title": issue.get("test_name", "Security issue"),
-                    "description": issue.get("issue_text", "Review this finding."),
-                    "file": issue.get("filename", ""),
-                    "line": issue.get("line_number", 0),
-                })
-    except (json.JSONDecodeError, subprocess.TimeoutExpired, OSError) as exc:
-        findings.append({
-            "id": "security-scan-error",
-            "tool": "Bandit",
-            "severity": "Warning",
-            "rule": "scanner-error",
-            "title": "Security scanner unavailable",
-            "description": str(exc),
-            "file": "",
-            "line": 0,
-        })
-
-    return {
-        "status": "success",
-        "controls": {
-            "cors_origins": allowed_origins,
-            "authentication_required": bool(auth_required and api_key),
-            "max_upload_bytes": int(os.getenv("PEP_MAX_UPLOAD_BYTES", str(10 * 1024 * 1024))),
-            "security_headers": ["X-Content-Type-Options", "X-Frame-Options", "Referrer-Policy", "Permissions-Policy"],
-            "workspace_path_restriction": True,
-            "upload_extension_allowlist": True,
-        },
-        "findings": findings,
-        "summary": {
-            "total": len(findings),
-            "high": sum(1 for item in findings if item["severity"].upper() == "HIGH"),
-            "medium": sum(1 for item in findings if item["severity"].upper() == "MEDIUM"),
-            "low": sum(1 for item in findings if item["severity"].upper() == "LOW"),
-        },
-    }
 
 import json
 

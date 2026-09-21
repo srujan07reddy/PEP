@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="pep-mark" x1="8" y1="6" x2="39" y2="42" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5EEAD4"/>
+      <stop offset="1" stop-color="#14B8A6"/>
+    </linearGradient>
+  </defs>
+  <path d="M24 4 41.32 14v20L24 44 6.68 34V14L24 4Z" fill="url(#pep-mark)" fill-opacity=".16" stroke="#5EEAD4" stroke-width="2"/>
+  <path d="M17 34V14h8.2a7 7 0 0 1 0 14H17m0-7h8" stroke="#F8FAFC" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m30.5 18.5 5-3M30.5 29.5l5 3" stroke="#FB7185" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="37" cy="14" r="2.5" fill="#FB7185"/>
+  <circle cx="37" cy="34" r="2.5" fill="#FB7185"/>
+</svg>
