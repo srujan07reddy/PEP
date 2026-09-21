@@ -3,23 +3,63 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
 import sys
+import secrets
 from pathlib import Path
 import ast
+import re
 
-WORKSPACE_ROOT = os.getenv("WORKSPACE_ROOT", "d:/product-engineering-platform")
+WORKSPACE_ROOT = os.getenv(
+    "WORKSPACE_ROOT",
+    str(Path(__file__).resolve().parents[3]),
+)
 if WORKSPACE_ROOT not in sys.path:
-    sys.path.append(WORKSPACE_ROOT)
+    sys.path.insert(0, WORKSPACE_ROOT)
 
 from core.framework.engines.domain_loader import DomainLoader
 
+try:
+    from .security import make_slug, read_upload, resolve_workspace_file, safe_identifier
+except ImportError:
+    from security import make_slug, read_upload, resolve_workspace_file, safe_identifier
+
 app = FastAPI(title="PEP Platform Console API", version="0.1.0")
+
+allowed_origins = [
+    origin.strip()
+    for origin in os.getenv(
+        "PEP_CORS_ORIGINS",
+        "http://localhost:5173,http://127.0.0.1:5173",
+    ).split(",")
+    if origin.strip()
+]
+api_key = os.getenv("PEP_API_KEY", "")
+auth_required = os.getenv("PEP_REQUIRE_AUTH", os.getenv("PEP_ENV", "development") == "production")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=allowed_origins,
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
+    allow_credentials=False,
 )
+
+
+@app.middleware("http")
+async def add_security_headers(request, call_next):
+    if auth_required and request.method != "OPTIONS":
+        supplied_key = request.headers.get("x-api-key", "")
+        authorization = request.headers.get("authorization", "")
+        if authorization.lower().startswith("bearer "):
+            supplied_key = authorization[7:].strip()
+        if not api_key or not supplied_key or not secrets.compare_digest(supplied_key, api_key):
+            return JSONResponse(status_code=401, content={"detail": "Authentication required"})
+
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "no-referrer"
+    response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+    return response
 
 class AgentRunRequest(BaseModel):
     agent_id: str
@@ -52,8 +92,8 @@ def get_domains():
                                 domain_config = data.get("domain", {})
                                 name = domain_config.get("name", name)
                                 version = domain_config.get("version", version)
-                        except:
-                            pass
+                        except Exception:
+                            data = {}
 
                     # Read external path if it exists
                     absolute_path = None
@@ -132,7 +172,7 @@ async def compile_organization(file: UploadFile = File(...)):
     # Force the name to match what load_organization_knowledge expects if we don't rewrite it
     # We will write it as 'uploaded_org_blueprint.json'
     file_path = upload_dir / "uploaded_org_blueprint.json"
-    content = await file.read()
+    content = await read_upload(file, {"json", "yaml", "yml"})
     file_path.write_bytes(content)
     
     oil = OrganizationIntelligenceLayer(Path(WORKSPACE_ROOT))
@@ -191,8 +231,9 @@ def get_engineering_blueprint(filepath: str = None):
 
     oil = OrganizationIntelligenceLayer(Path(WORKSPACE_ROOT))
     
-    if filepath and Path(filepath).exists():
-        okm = oil.load_organization_knowledge_from_file(filepath, "custom_org")
+    if filepath:
+        safe_filepath = resolve_workspace_file(filepath, Path(WORKSPACE_ROOT))
+        okm = oil.load_organization_knowledge_from_file(str(safe_filepath), "custom_org")
     else:
         okm = oil.load_organization_knowledge("mock_org")
     
@@ -222,9 +263,7 @@ def get_engineering_blueprint(filepath: str = None):
 
 @app.post("/domains")
 def create_domain(req: CreateDomainRequest):
-    slug = req.name.lower().replace(" ", "_").strip()
-    if not slug:
-        raise HTTPException(status_code=400, detail="Invalid project name")
+    slug = make_slug(req.name)
         
     domains_dir = Path(WORKSPACE_ROOT) / "governance" / "domains" / slug
     workspace_dir = Path(WORKSPACE_ROOT) / "workspaces" / slug
@@ -252,9 +291,8 @@ class EditDomainRequest(BaseModel):
 
 @app.put("/domains/{domain_id}")
 def edit_domain(domain_id: str, req: EditDomainRequest):
-    new_slug = req.name.lower().replace(" ", "_").strip()
-    if not new_slug:
-        raise HTTPException(status_code=400, detail="Invalid name")
+    safe_identifier(domain_id, "domain id")
+    new_slug = make_slug(req.name)
         
     old_workspace_dir = Path(WORKSPACE_ROOT) / "workspaces" / domain_id
     old_domains_dir = Path(WORKSPACE_ROOT) / "governance" / "domains" / domain_id
@@ -299,8 +337,9 @@ def install_domain(req: InstallDomainRequest):
     
     try:
         from core.framework.engines.domain_registry import DomainRegistry
+        package_path = resolve_workspace_file(req.package_path, Path(WORKSPACE_ROOT))
         registry = DomainRegistry(str(Path(WORKSPACE_ROOT) / "governance" / "domains"))
-        result = registry.install_domain(req.package_path)
+        result = registry.install_domain(str(package_path))
         
         if result["status"] == "error":
             raise HTTPException(status_code=400, detail=result.get("message") + " " + str(result.get("errors", [])))
@@ -317,6 +356,7 @@ def delete_domain(domain_id: str):
     if str(Path(WORKSPACE_ROOT)) not in sys.path:
         sys.path.insert(0, str(Path(WORKSPACE_ROOT)))
         
+    safe_identifier(domain_id, "domain id")
     workspace_dir = Path(WORKSPACE_ROOT) / "workspaces" / domain_id
     domains_dir = Path(WORKSPACE_ROOT) / "governance" / "domains" / domain_id
     
@@ -390,6 +430,7 @@ def get_agents():
 @app.get("/standards")
 def get_standards():
     return {"data": [{"id": "python.yaml"}, {"id": "react.yaml"}, {"id": "security.yaml"}]}
+
 
 import json
 
@@ -466,8 +507,8 @@ def get_mcp_tools():
                                 "name": node.name,
                                 "description": ast.get_docstring(node) or "No description"
                             })
-        except Exception as e:
-            print(f"Error parsing MCP server: {e}")
+        except Exception:
+            tools = []
             
     return {"data": tools}
 
@@ -503,6 +544,7 @@ def get_findings():
 
 @app.get("/agents/{agent_id}")
 def get_agent_details(agent_id: str):
+    safe_identifier(agent_id, "agent id")
     filename = agent_id.replace("-", "_") + "_agent.py"
     filepath = Path(WORKSPACE_ROOT) / "core" / "governance_agents" / filename
     
@@ -520,8 +562,8 @@ def get_agent_details(agent_id: str):
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef) and not node.name.startswith("__"):
                 functionalities.append(node.name.replace("_", " ").title().strip())
-    except Exception:
-        pass
+    except (SyntaxError, ValueError):
+        functionalities = []
         
     if not functionalities:
         functionalities = ["Dynamic Execution", "Code Analysis"]
@@ -537,6 +579,7 @@ class UpdateAgentRequest(BaseModel):
 
 @app.put("/agents/{agent_id}")
 def update_agent(agent_id: str, req: UpdateAgentRequest):
+    safe_identifier(agent_id, "agent id")
     filename = agent_id.replace("-", "_") + "_agent.py"
     filepath = Path(WORKSPACE_ROOT) / "core" / "governance_agents" / filename
     
@@ -556,6 +599,7 @@ class ToggleAgentRequest(BaseModel):
 
 @app.patch("/agents/{agent_id}")
 def toggle_agent(agent_id: str, req: ToggleAgentRequest):
+    safe_identifier(agent_id, "agent id")
     agent_id_underscore = agent_id.replace("-", "_")
     agents_dir = Path(WORKSPACE_ROOT) / "core" / "governance_agents"
     
@@ -575,6 +619,7 @@ def toggle_agent(agent_id: str, req: ToggleAgentRequest):
 
 @app.delete("/agents/{agent_id}")
 def delete_agent(agent_id: str):
+    safe_identifier(agent_id, "agent id")
     agent_id_underscore = agent_id.replace("-", "_")
     agents_dir = Path(WORKSPACE_ROOT) / "core" / "governance_agents"
     
@@ -802,8 +847,8 @@ def analyze_process(req: ProcessIntelligenceRequest):
 @app.post("/api/intelligence/document")
 async def parse_document(file: UploadFile = File(...)):
     try:
-        contents = await file.read()
-        file_ext = file.filename.split(".")[-1].lower() if "." in file.filename else "txt"
+        file_ext = Path(file.filename or "").suffix.lower().lstrip(".") or "txt"
+        contents = await read_upload(file, {"pdf", "png", "jpg", "jpeg", "docx", "pptx", "txt", "json", "yaml", "yml"})
         
         engine = DocumentIntelligenceEngine()
         result = engine.extract_structured_info(contents, file_ext)
