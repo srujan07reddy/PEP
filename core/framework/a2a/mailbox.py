@@ -15,7 +15,9 @@ class Mailbox:
         # Persist for UI
         import os, json
         from pathlib import Path
-        repo_root = Path(os.environ.get("WORKSPACE_ROOT", "d:/product-engineering-platform"))
+        repo_root = Path(
+            os.environ.get("WORKSPACE_ROOT", Path(__file__).resolve().parents[3])
+        )
         system_dir = repo_root / "workspaces" / ".system"
         system_dir.mkdir(parents=True, exist_ok=True)
         messages_file = system_dir / "messages.jsonl"

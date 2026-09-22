@@ -107,3 +107,8 @@ export const getMcpTools = async () => {
   const { data } = await api.get('/mcp/tools');
   return data.data;
 };
+
+export const getMcpServers = async () => {
+  const { data } = await api.get('/mcp/servers');
+  return data.data;
+};

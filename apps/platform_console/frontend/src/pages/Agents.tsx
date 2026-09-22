@@ -89,6 +89,7 @@ export default function Agents() {
     mutationFn: runAgent,
     onSuccess: (data) => {
       setExecutionResult(data);
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
     }
   });
 
