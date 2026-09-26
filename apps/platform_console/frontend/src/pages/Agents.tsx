@@ -89,6 +89,7 @@ export default function Agents() {
     mutationFn: runAgent,
     onSuccess: (data) => {
       setExecutionResult(data);
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
     }
   });
 
@@ -186,25 +187,27 @@ export default function Agents() {
         </div>
       </div>
       
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden mb-8">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-gray-50 border-b border-gray-200">
-              <th className="p-4 font-semibold text-gray-600">Agent ID</th>
-              <th className="p-4 font-semibold text-gray-600">Status</th>
-              <th className="p-4 font-semibold text-gray-600 text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {agents?.map((a: any) => (
-              <tr key={a.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
-                <td className="p-4 font-mono text-gray-700">{a.id}</td>
-                <td className="p-4">
-                  <span className={`px-2 py-1 rounded text-xs font-semibold ${a.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                    {a.status.toUpperCase()}
-                  </span>
-                </td>
-                <td className="p-4 text-right space-x-2">
+      <div className="mb-8">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-600">Agent registry</p>
+            <h2 className="mt-1 text-xl font-bold text-slate-800">Available agents</h2>
+          </div>
+          <span className="text-sm text-slate-500">{agents?.length || 0} registered</span>
+        </div>
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {agents?.map((a: any) => (
+            <article key={a.id} className="group rounded-2xl border border-white/80 bg-white/80 p-5 shadow-lg shadow-slate-300/25 backdrop-blur-xl transition-all duration-200 hover:-translate-y-1 hover:border-teal-200 hover:bg-white hover:shadow-xl hover:shadow-teal-200/40">
+              <div className="mb-5 flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Agent</p>
+                  <h3 className="truncate font-serif text-lg font-bold text-slate-800" title={a.id}>{a.id}</h3>
+                </div>
+                <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${a.status === 'active' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
+                  {a.status.toUpperCase()}
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2">
                   <button 
                     onClick={() => {
                       const newStatus = a.status === 'active' ? 'disabled' : 'active';
@@ -246,11 +249,10 @@ export default function Agents() {
                   >
                     {runMutation.isPending && runMutation.variables?.agentId === a.id ? 'Running...' : 'Execute'}
                   </button>
-                </td>
-              </tr>
+              </div>
+            </article>
             ))}
-          </tbody>
-        </table>
+        </div>
       </div>
 
       {executionResult && (
@@ -281,11 +283,14 @@ export default function Agents() {
             </div>
           </div>
 
-          <div className="p-6">
+          <div className="grid gap-5 p-6 lg:grid-cols-2">
             {executionResult.logs && executionResult.logs.length > 0 && (
-              <div className="mb-6">
-                <h3 className="font-semibold text-gray-700 mb-2">Execution Terminal:</h3>
-                <div className="bg-slate-900 rounded-md p-4 font-mono text-sm overflow-x-auto">
+              <section className="rounded-2xl border border-slate-800 bg-slate-950 p-5 shadow-inner shadow-black/20">
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                  <h3 className="font-semibold text-slate-200">Execution Terminal</h3>
+                </div>
+                <div className="max-h-96 overflow-x-auto font-mono text-sm">
                   {executionResult.logs.map((log: string, idx: number) => {
                     let color = "text-gray-300";
                     if (log.includes("[ERROR]") || log.includes("[!]")) color = "text-red-400 font-bold";
@@ -298,14 +303,17 @@ export default function Agents() {
                     );
                   })}
                 </div>
-              </div>
+              </section>
             )}
           
             {executionResult.findings?.length > 0 ? (
-              <div className="space-y-4">
-                <h3 className="font-semibold text-gray-700">Findings:</h3>
+              <section className="space-y-4 rounded-2xl border border-red-100 bg-white p-5 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-slate-700">Findings</h3>
+                  <span className="rounded-full bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-800">{executionResult.findings.length} found</span>
+                </div>
                 {executionResult.findings.map((f: any, idx: number) => (
-                  <div key={idx} className="border-l-4 border-red-500 bg-red-50 p-4 rounded-r-md">
+                  <div key={idx} className="rounded-xl border-l-4 border-red-500 bg-red-50 p-4">
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-bold text-red-900">{f.title}</h4>
                       <span className="text-xs bg-red-200 text-red-900 px-2 py-0.5 rounded font-mono">{f.severity}</span>
@@ -315,11 +323,11 @@ export default function Agents() {
                     <p className="text-sm font-medium text-red-900">Recommendation: {f.recommendation}</p>
                   </div>
                 ))}
-              </div>
+              </section>
             ) : (
-              <div className="text-green-700 bg-green-50 p-4 rounded-md border border-green-200">
+              <section className="flex min-h-40 items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-center text-emerald-700 shadow-sm">
                 No architectural violations found. Codebase is clean!
-              </div>
+              </section>
             )}
           </div>
         </div>
@@ -489,7 +497,7 @@ export default function Agents() {
             </div>
             
             <div className="p-5">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Agent ID</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Agent</label>
               <input 
                 type="text" 
                 value={newAgentId}

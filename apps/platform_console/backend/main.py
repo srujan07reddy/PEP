@@ -512,6 +512,27 @@ def get_mcp_tools():
             
     return {"data": tools}
 
+@app.get("/mcp/servers")
+def get_mcp_servers():
+    """Returns MCP servers configured for the workspace."""
+    settings_file = Path(WORKSPACE_ROOT) / ".vscode" / "settings.json"
+    servers = []
+
+    if settings_file.exists():
+        try:
+            settings = json.loads(settings_file.read_text(encoding="utf-8"))
+            configured_servers = settings.get("mcp.servers", {})
+            if isinstance(configured_servers, dict):
+                servers = [
+                    {"name": name, **config}
+                    for name, config in configured_servers.items()
+                    if isinstance(config, dict)
+                ]
+        except (json.JSONDecodeError, OSError):
+            servers = []
+
+    return {"data": servers}
+
 @app.get("/findings")
 def get_findings():
     reports_file = Path(WORKSPACE_ROOT) / "workspaces" / ".system" / "reports.jsonl"
