@@ -1,0 +1,45 @@
+The execution sequence for the Product Engineering Platform (PEP):
+
+0. Engine Architecture (Phase 0: Architecture & Contracts)
+        ↓
+1. PEP Code Model
+        ↓
+2. Tree-sitter Provider
+        ↓
+3. Code Intelligence Foundation
+        ↓
+4. Multi-Engine Code Validation
+        ↓
+5. PEP Text Model
+        ↓
+6. NLP++ Provider
+        ↓
+7. Multi-Engine Text Validation
+        ↓
+8. Unified Evidence Model
+        ↓
+9. Knowledge Compiler
+        ↓
+10. Knowledge Infrastructure
+        ↓
+11. Intelligence Engines
+        ↓
+12. Assessment & Recommendations
+        ↓
+13. Decision Board
+        ↓
+14. Evolution Engine
+        ↓
+15. Engine Benchmarking & Optimization
+
+Critical Architectural Rule:
+Do not implement every possible engine before building PEP intelligence.
+Tree-sitter and NLP++ are enough to prove the architecture:
+- 2 engines
+- 2 adapters
+- 2 normalized models
+- 1 evidence model
+- 1 knowledge compiler
+- PEP intelligence
+
+Once that vertical slice works, adding the 10th or 20th engine becomes an integration problem rather than an architectural redesign.

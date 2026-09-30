@@ -22,7 +22,7 @@ export default function ExecutiveEngineeringConsole() {
 
   useEffect(() => {
     // Fetch live workflows from the real LCS diffing engine
-    fetch('http://localhost:8000/workflows/optimize_live', {
+    fetch('http://127.0.0.1:8000/workflows/optimize_live', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({})

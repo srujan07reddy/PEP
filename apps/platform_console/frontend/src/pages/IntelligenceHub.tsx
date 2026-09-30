@@ -49,7 +49,7 @@ const IntelligenceHub: React.FC = () => {
   const handleScanRepo = async () => {
     setScanning(true);
     try {
-      const res = await fetch('http://localhost:8000/api/intelligence/scan-repo', {
+      const res = await fetch('http://127.0.0.1:8000/api/intelligence/scan-repo', {
         method: 'POST'
       });
       const data = await res.json();
@@ -63,7 +63,7 @@ const IntelligenceHub: React.FC = () => {
   const handleProcess = async () => {
     setProcessing(true);
     try {
-      const res = await fetch('http://localhost:8000/api/intelligence/process', {
+      const res = await fetch('http://127.0.0.1:8000/api/intelligence/process', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -87,7 +87,7 @@ const IntelligenceHub: React.FC = () => {
     formData.append('file', file);
 
     try {
-      const res = await fetch('http://localhost:8000/api/intelligence/document', {
+      const res = await fetch('http://127.0.0.1:8000/api/intelligence/document', {
         method: 'POST',
         body: formData
       });

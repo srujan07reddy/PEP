@@ -1,11 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { getDomains, getAgents, getStandards, getMcpServers } from '../lib/api';
+import { getDomains, getAgents, getMcpServers } from '../lib/api';
 
 export default function Dashboard() {
   const { data: domains } = useQuery({ queryKey: ['domains'], queryFn: getDomains });
   const { data: agents } = useQuery({ queryKey: ['agents'], queryFn: getAgents });
-  const { data: standards } = useQuery({ queryKey: ['standards'], queryFn: getStandards });
   const { data: mcpServers } = useQuery({ queryKey: ['mcp-servers'], queryFn: getMcpServers });
 
   return (
@@ -25,10 +24,10 @@ export default function Dashboard() {
           <h2 className="mt-3 px-1 text-sm font-semibold uppercase tracking-[0.18em] text-slate-600">Registered Agents</h2>
         </div>
         <div className="group">
-          <div className="flex min-h-40 items-end rounded-2xl border border-white/70 bg-white/40 p-6 opacity-80 shadow-lg shadow-slate-300/25 backdrop-blur-xl cursor-not-allowed">
-            <p className="text-5xl font-bold tracking-tight text-cyan-700">{standards?.length || 0}</p>
-          </div>
-          <h2 className="mt-3 px-1 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Platform Standards</h2>
+          <Link to="/standards" className="flex min-h-40 items-end rounded-2xl border border-white/80 bg-white/55 p-6 shadow-lg shadow-slate-300/30 backdrop-blur-xl transition-all hover:-translate-y-1 hover:bg-white/70 hover:shadow-xl hover:shadow-cyan-200/40 cursor-pointer">
+            <p className="text-5xl font-bold tracking-tight text-cyan-700">12</p>
+          </Link>
+          <h2 className="mt-3 px-1 text-sm font-semibold uppercase tracking-[0.18em] text-slate-600">Platform Standards</h2>
         </div>
         <div className="group">
           <Link to="/mcp" className="flex min-h-40 items-end rounded-2xl border border-white/80 bg-white/55 p-6 shadow-lg shadow-slate-300/30 backdrop-blur-xl transition-all hover:-translate-y-1 hover:bg-white/70 hover:shadow-xl hover:shadow-cyan-200/40 cursor-pointer">

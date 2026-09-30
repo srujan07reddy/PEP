@@ -11,7 +11,7 @@ export default function EvolutionBlueprintDashboard() {
 
   const fetchBlueprint = () => {
     setLoading(true);
-    const url = filePath ? `http://localhost:8000/engineering/blueprint?filepath=${encodeURIComponent(filePath)}` : 'http://localhost:8000/engineering/blueprint';
+    const url = filePath ? `http://127.0.0.1:8000/engineering/blueprint?filepath=${encodeURIComponent(filePath)}` : 'http://127.0.0.1:8000/engineering/blueprint';
     fetch(url)
       .then(res => res.json())
       .then(data => {

@@ -13,6 +13,7 @@ import ExecutiveEngineeringConsole from './pages/ExecutiveEngineeringConsole';
 import KnowledgeCompilerPage from './pages/KnowledgeCompilerPage';
 import IntelligenceHub from './pages/IntelligenceHub';
 import IdeaEnhancer from './pages/IdeaEnhancer';
+import Standards from './pages/Standards';
 
 const queryClient = new QueryClient();
 
@@ -80,6 +81,7 @@ function App() {
               <Route path="/mcp" element={<Mcp />} />
               <Route path="/findings" element={<Findings />} />
               <Route path="/reports" element={<Reports />} />
+              <Route path="/standards" element={<Standards />} />
               <Route path="/idea-enhancer" element={<IdeaEnhancer />} />
             </Routes>
           </main>

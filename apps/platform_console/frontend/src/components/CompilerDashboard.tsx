@@ -17,7 +17,7 @@ export default function CompilerDashboard({ stats, setStats, selectedFile, setSe
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      const response = await fetch('http://localhost:8000/organization/compile', { method: 'POST', body: formData });
+      const response = await fetch('http://127.0.0.1:8000/organization/compile', { method: 'POST', body: formData });
       setStats(await response.json());
     } catch (err) {
       console.error(err);
