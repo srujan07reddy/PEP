@@ -23,9 +23,6 @@ class Evidence:
     (from Code Models or Text Models) into a single computable structure, 
     allowing PEP to reason across all forms of organizational knowledge.
     """
-    id: str = field(default_factory=lambda: str(uuid.uuid4()))
-    timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    
     source: str                 # e.g., 'deployment.py', 'database_policy.pdf'
     source_type: str            # e.g., 'code', 'document', 'ticket'
     evidence_type: str          # e.g., 'Function', 'Requirement', 'Rule', 'Class'
@@ -35,3 +32,6 @@ class Evidence:
     
     location: EvidenceLocation  # Precise mapping back to origin
     payload: Any                # Flexible payload containing the knowledge (e.g. "deploy_database" or "DBA approval required")
+
+    id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())

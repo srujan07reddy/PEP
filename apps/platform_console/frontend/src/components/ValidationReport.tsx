@@ -29,8 +29,8 @@ export default function ValidationReport({ orgName = "mock_org" }: any) {
             <ShieldAlert className="text-red-500" /> Graph Validation Engine
           </h2>
           <p className="text-sm text-gray-500 mt-1">
-            Executes advanced graph theory algorithms (like Depth-First Search) over the OKG to detect 
-            orphaned nodes, broken hierarchies, and circular dependencies before they hit the ERP layer.
+            Validates the OKG against domain constraints, schema rules, and semantic consistency requirements.
+            Executes structural and semantic validations before syncing with the reasoning layer.
           </p>
         </div>
         <button 
@@ -39,7 +39,7 @@ export default function ValidationReport({ orgName = "mock_org" }: any) {
           className="bg-gray-800 hover:bg-black text-white px-4 py-2 rounded shadow flex items-center gap-2 disabled:opacity-50"
         >
           {loading ? <Play className="animate-pulse w-4 h-4" /> : <Play className="w-4 h-4" />}
-          Run DFS Validation
+          Validate Knowledge Graph
         </button>
       </div>
 

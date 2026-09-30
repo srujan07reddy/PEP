@@ -9,7 +9,6 @@ import A2a from './pages/A2a';
 import Mcp from './pages/Mcp';
 import Findings from './pages/Findings';
 import Reports from './pages/Reports';
-import ExecutiveEngineeringConsole from './pages/ExecutiveEngineeringConsole';
 import KnowledgeCompilerPage from './pages/KnowledgeCompilerPage';
 import IntelligenceHub from './pages/IntelligenceHub';
 import IdeaEnhancer from './pages/IdeaEnhancer';
@@ -43,9 +42,6 @@ function App() {
                 <NavLink to="/compiler" className={({ isActive }) => `block rounded-lg px-3 py-2 text-sm transition-all hover:-translate-y-0.5 hover:bg-slate-700 hover:text-white ${isActive ? 'bg-teal-500/90 font-bold text-white hover:bg-teal-400' : 'text-slate-300'}`}>Knowledge Compiler</NavLink>
               </li>
               <li>
-                <NavLink to="/erp" className={({ isActive }) => `block rounded-lg px-3 py-2 text-sm transition-all hover:-translate-y-0.5 hover:bg-slate-700 hover:text-white ${isActive ? 'bg-teal-500/90 font-bold text-white hover:bg-teal-400' : 'text-slate-300'}`}>Executive Console</NavLink>
-              </li>
-              <li>
                 <NavLink to="/domains" className={({ isActive }) => `block rounded-lg px-3 py-2 text-sm transition-all hover:-translate-y-0.5 hover:bg-slate-700 hover:text-white ${isActive ? 'bg-teal-500/90 font-bold text-white hover:bg-teal-400' : 'text-slate-300'}`}>Domains</NavLink>
               </li>
               <li>
@@ -73,7 +69,6 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/intelligence" element={<IntelligenceHub />} />
               <Route path="/compiler" element={<KnowledgeCompilerPage />} />
-              <Route path="/erp" element={<ExecutiveEngineeringConsole />} />
               <Route path="/domains" element={<Domains />} />
               <Route path="/workspaces" element={<Workspaces />} />
               <Route path="/agents" element={<Agents />} />

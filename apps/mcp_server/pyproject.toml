@@ -15,3 +15,6 @@ build-backend = "hatchling.build"
 
 [project.scripts]
 pep-mcp = "server:main"
+
+[tool.pyright]
+extraPaths = ["../.."]

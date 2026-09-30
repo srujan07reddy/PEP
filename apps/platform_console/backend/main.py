@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
@@ -20,7 +21,7 @@ from core.framework.engines.domain_loader import DomainLoader
 try:
     from .security import make_slug, read_upload, resolve_workspace_file, safe_identifier
 except ImportError:
-    from security import make_slug, read_upload, resolve_workspace_file, safe_identifier
+    from security import make_slug, read_upload, resolve_workspace_file, safe_identifier  # type: ignore
 
 app = FastAPI(title="PEP Platform Console API", version="0.1.0")
 

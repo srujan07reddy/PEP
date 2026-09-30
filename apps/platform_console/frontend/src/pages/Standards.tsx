@@ -1,26 +1,24 @@
 import { Link } from 'react-router-dom';
 
 const standardsList = [
-  { area: 'Input Standard', status: 'In Progress', statusColor: 'bg-blue-500', evidence: 'Architecture and requirements established' },
-  { area: 'Processing Standard', status: 'In Progress', statusColor: 'bg-blue-500', evidence: 'Processing technologies investigated' },
-  { area: 'Multimodal Understanding', status: 'In Progress', statusColor: 'bg-blue-500', evidence: 'NLP/diagram/visual requirements established' },
-  { area: 'Structured Representation', status: 'Partially Defined', statusColor: 'bg-yellow-500', evidence: 'Data/provenance model established conceptually' },
-  { area: 'AI / Model Standard', status: 'In Progress', statusColor: 'bg-blue-500', evidence: 'Provider abstraction and usage requirements defined' },
-  { area: 'Context & Retrieval', status: 'Partially Defined', statusColor: 'bg-yellow-500', evidence: 'Retrieval requirements established' },
-  { area: 'Reasoning & Grounding', status: 'Partially Defined', statusColor: 'bg-yellow-500', evidence: 'Grounding requirements established' },
-  { area: 'Output Standard', status: 'Partially Defined', statusColor: 'bg-yellow-500', evidence: 'Output requirements established' },
-  { area: 'Security & Privacy', status: 'Partially Defined', statusColor: 'bg-yellow-500', evidence: 'Security requirements identified' },
-  { area: 'Extensibility & Integration', status: 'In Progress', statusColor: 'bg-blue-500', evidence: 'Open-source integration evaluated' },
-  { area: 'Reliability & Observability', status: 'Planned', statusColor: 'bg-gray-300', evidence: 'Standards identified, implementation pending' },
-  { area: 'Versioning & Governance', status: 'Planned', statusColor: 'bg-gray-300', evidence: 'Requirements identified, implementation pending' },
+  { area: 'Engine Architecture & Contracts', status: 'Implemented', statusColor: 'bg-emerald-500', evidence: 'Multi-engine interfaces and Engine Optimizer built' },
+  { area: 'Code Extraction', status: 'Implemented', statusColor: 'bg-emerald-500', evidence: 'PEP Code Model & Tree-sitter adapter implemented' },
+  { area: 'Text Extraction', status: 'Implemented', statusColor: 'bg-emerald-500', evidence: 'PEP Text Model & NLP++/Transformer ensemble implemented' },
+  { area: 'Knowledge Convergence', status: 'Implemented', statusColor: 'bg-emerald-500', evidence: 'Unified Evidence Model established' },
+  { area: 'Knowledge Compilation', status: 'Implemented', statusColor: 'bg-emerald-500', evidence: 'Knowledge Compiler resolving cross-domain relationships' },
+  { area: 'Infrastructure Abstraction', status: 'Implemented', statusColor: 'bg-emerald-500', evidence: 'KnowledgeStore with Neo4j, Qdrant, Postgres providers' },
+  { area: 'Intelligence Engines', status: 'Implemented', statusColor: 'bg-emerald-500', evidence: 'Security, Architecture, Quality, and Organization analysis' },
+  { area: 'Assessments & Traceability', status: 'Implemented', statusColor: 'bg-emerald-500', evidence: 'Recommendations strictly mapped to source Evidence' },
+  { area: 'Decision Board (ADRs)', status: 'Implemented', statusColor: 'bg-emerald-500', evidence: 'Automated engineering Decision model established' },
+  { area: 'Evolution & Drift Tracking', status: 'Implemented', statusColor: 'bg-emerald-500', evidence: 'Evolution Engine detects semantic T1 vs T2 drift' },
 ];
 
 const evidenceLevels = [
   { level: 'LEVEL 0 — CONCEPT', desc: 'The requirement has been identified.', evidence: 'Architecture discussion / requirement.', progress: '100%', color: 'bg-emerald-500' },
-  { level: 'LEVEL 1 — DESIGNED', desc: 'The architecture or interface has been defined.', evidence: 'Schema / interface / architecture specification.', progress: '65%', color: 'bg-teal-500' },
-  { level: 'LEVEL 2 — IMPLEMENTED', desc: 'The capability exists in the codebase.', evidence: 'Implementation + successful test.', progress: '35%', color: 'bg-cyan-500' },
-  { level: 'LEVEL 3 — VALIDATED', desc: 'The capability has been tested against representative workloads.', evidence: 'Integration/E2E test, benchmark, or evaluation results.', progress: '15%', color: 'bg-sky-500' },
-  { level: 'LEVEL 4 — PRODUCTION VERIFIED', desc: 'The capability has demonstrated reliability under actual operational conditions.', evidence: 'Production metrics, incident history, operational validation.', progress: '5%', color: 'bg-blue-600' },
+  { level: 'LEVEL 1 — DESIGNED', desc: 'The architecture or interface has been defined.', evidence: 'Schema / interface / architecture specification.', progress: '100%', color: 'bg-emerald-500' },
+  { level: 'LEVEL 2 — IMPLEMENTED', desc: 'The capability exists in the codebase.', evidence: 'Implementation + successful test.', progress: '100%', color: 'bg-emerald-500' },
+  { level: 'LEVEL 3 — VALIDATED', desc: 'The capability has been tested against representative workloads.', evidence: 'Integration/E2E test, benchmark, or evaluation results.', progress: '65%', color: 'bg-teal-500' },
+  { level: 'LEVEL 4 — PRODUCTION VERIFIED', desc: 'The capability has demonstrated reliability under actual operational conditions.', evidence: 'Production metrics, incident history, operational validation.', progress: '10%', color: 'bg-blue-600' },
 ];
 
 export default function Standards() {
@@ -75,13 +73,14 @@ export default function Standards() {
             <h2 className="mb-4 text-xl font-semibold text-slate-800 border-b pb-3">PEP Working Procedure Pipeline</h2>
             <div className="relative mt-6 flex flex-col items-start gap-4 pb-4">
               {[
-                { name: 'Input Validation', desc: 'Identity, Content & Integrity' },
-                { name: 'Processing', desc: 'Extraction, OCR / NLP, Vision' },
-                { name: 'Understanding', desc: 'Text, Tables, Images, Diagrams, Flowcharts' },
-                { name: 'Structuring', desc: 'Entities, Relationships, Context' },
-                { name: 'AI / Reasoning', desc: 'Models, Context, Retrieval' },
-                { name: 'Grounding', desc: 'Evidence, Provenance' },
-                { name: 'Output', desc: 'Answer, Citation, Structure' }
+                { name: '1. Extraction', desc: 'Tree-sitter, NLP++, Semgrep' },
+                { name: '2. Normalization', desc: 'PEP Code Model & Text Model' },
+                { name: '3. Convergence', desc: 'Unified Evidence Model' },
+                { name: '4. Compilation', desc: 'Knowledge Graph Construction' },
+                { name: '5. Analysis', desc: 'Intelligence Engines (Security, Architecture)' },
+                { name: '6. Traceability', desc: 'Findings & Recommendations' },
+                { name: '7. Action', desc: 'Decision Board (Automated ADRs)' },
+                { name: '8. Evolution', desc: 'T1 vs T2 Semantic Drift Detection' }
               ].map((step, idx, arr) => (
                 <div key={idx} className="relative flex w-full items-start gap-4 group">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700 font-bold shadow-sm z-10 group-hover:scale-110 transition-transform">
@@ -125,11 +124,12 @@ export default function Standards() {
             <h2 className="mb-2 text-lg font-semibold text-teal-900">The PEP Contract</h2>
             <ul className="list-disc pl-5 text-sm text-teal-800 space-y-2 mt-4">
               <li>Every external input is treated as untrusted.</li>
-              <li>Every major resource receives a stable identity.</li>
-              <li>Processing components expose defined inputs and outputs.</li>
-              <li>Extracted information retains source provenance wherever possible.</li>
-              <li>Core application logic must not depend directly on a single AI provider.</li>
+              <li>Every major resource receives a stable UUID identity.</li>
+              <li>Processing components expose defined inputs and outputs (BaseEngine).</li>
+              <li>Extracted information retains source provenance wherever possible (Evidence Model).</li>
+              <li>Core application logic must not depend directly on a single AI/parsing provider (Engine Optimizer).</li>
               <li>Secrets must never be exposed through source code, logs, prompts, or responses.</li>
+              <li>Decisions must be 100% explainable and traceable back to source evidence.</li>
             </ul>
             <p className="mt-4 text-xs font-medium text-teal-700 italic border-t border-teal-200 pt-3">
               "No green status without proof."

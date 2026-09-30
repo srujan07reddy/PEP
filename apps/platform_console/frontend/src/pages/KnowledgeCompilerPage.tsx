@@ -12,8 +12,8 @@ export default function KnowledgeCompilerPage() {
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">Knowledge systems / compiler</p>
         <h1 className="text-4xl font-bold tracking-tight text-slate-900">Organizational Knowledge Compiler</h1>
         <p className="mt-3 text-base leading-7 text-slate-500">
-          Upload and compile your organizational blueprint into a traversable Knowledge Graph.
-          Once compiled, validate the graph to ensure no circular dependencies or orphaned roles exist.
+          Upload and compile your organizational blueprint into a typed, validated, and traceable Knowledge Graph.
+          Once compiled, validate the graph against domain constraints, schema definitions, and semantic rules.
         </p>
       </div>
       
